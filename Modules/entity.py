@@ -39,7 +39,8 @@ ENEMIES = {
 class Enemy(Entity):
     def __init__(self, difficulty=1):
         self.enemy_data = random.choice(ENEMIES[f'{difficulty}_diff'])
-        super().__init__(20)
+        # Base health is 10 damage * a random below zero float. Every difficulty level adds +10 to that.
+        super().__init__((10*difficulty*random.random()) + 10*(difficulty - 1))
 
 #--------------------------------------------------------------------------------------------------------------
 #   Player
@@ -52,3 +53,5 @@ class Player(Entity):
     
     def equip(self, name, damage):
         self.equipped = Weapon(name, damage)
+
+    
