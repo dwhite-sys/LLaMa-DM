@@ -2,6 +2,13 @@ import tkinter
 import threading
 
 class Menu:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Menu, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
         menu = tkinter.Tk()
         menu.title = "AI DM"
@@ -25,12 +32,21 @@ class Menu:
         self.player_input = player_input
         self.text_entered = threading.Event()
 
-    def enter_text(self):
+        self.player_input.bind('<Return>', self.reset_input_text)
+
+    last_input = ''
+    def reset_input_text(self):
+        global last_input
         self.text_entered.set()
-        text = self.player_input.get()
-        self.text_entered.clear()
-        return text
+        last_input = self.player_input.get()
+        
+
+    def get_input(self):
+        self.text_entered.wait()
+        return last_input
+
+    def change_situation(self, new_text):
+        self.ituation.config(text=new_text)
     
-menu = Menu()
         
 
