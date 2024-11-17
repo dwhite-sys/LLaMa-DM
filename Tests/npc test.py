@@ -59,7 +59,7 @@ def talk_to_npc(name):
         exit = dialog(name, user_input)
     ollama.generate(f'{name}', '', keep_alive=0)
 
-    print(f"\nEnd communication: {exit}")
+    print(f"\nConnection terminated: {exit}")
 
 
 talk_to_npc('Edward')

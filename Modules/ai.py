@@ -46,7 +46,7 @@ class AI():
 #  Ask a question and get the intent
     def ask(self, query, options, testing=False):
         loading.start('Generating question')
-        prompt = f'Make a forboding version of "{query}" in the absolute shortest way possible in question form. It should be in second person and not be encapsolated in quotation marks. Do not include any additional information in your output.'
+        prompt = f'Make a slightly forboding version of "{query}" in an equally short question. It should be in second person and should not be in quotation marks. Don\'t obscure the original question by being too poetic.'
         rephrase = ollama.generate(self.version, prompt)['response']
         menu.situation.config(text=rephrase)
         loading.stop()

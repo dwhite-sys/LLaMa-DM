@@ -143,6 +143,7 @@ def find_intent(player_prompt, choices, context=None, basic_choice=True, debug=F
 
             prompt = f"Make a tally for how many times each choice was picked and summarize why they were picked: [\n{compiled_responses}]. The responses are assumptions from AI intent detectors, and they all received the exact same user input. You're here to parse them."
             debug_output = ollama.generate(VERSION, prompt)['response'].lower().strip(", .")
+                
 
             stop_loading()
 
@@ -210,9 +211,6 @@ def describe_enemy(difficulty=easy):
             context = chunk['context']
         except:
             ""
-    
-    with open('data/situation_context.json', 'w') as f:
-        json.dump(context, f)
 
 
     
@@ -237,12 +235,6 @@ def describe_enemy(difficulty=easy):
 #--------------------------------------------------------------------------------------------------------------
 
 situation_context = []
-
-with open(f'data/situation_context.json') as context_file:
-    try:
-        situation_context = json.load(context_file)
-    except:
-        ""
 
 def describe(base, stream=False, context=False):
     hide_cursor()
