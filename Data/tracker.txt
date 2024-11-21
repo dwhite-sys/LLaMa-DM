@@ -1,0 +1,7 @@
+Question: You approach a village. Would you like to proceed?
+Options: proceed
+Answer: proceed
+Result: Proceed
+Average: 14.85
+Attempts:2
+Total Tries:1

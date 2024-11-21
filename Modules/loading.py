@@ -27,6 +27,7 @@ class LoadingScreen:
         self.stop_loading = threading.Event()
     
     def load(self, reason='loading'):
+        "Only used internally, use the start method to start a loading screen."
         hide_cursor()
         clear()
         animation = ["\\", "|", "/", "-"]
@@ -41,12 +42,15 @@ class LoadingScreen:
         clear()
     
     def stop(self):
+        
     #  Tell the load function to stop, and wait for it to say it's done stopping.
+        "Stops the current loading screen."
         self.stop_loading.set()
         self.load_stopped.wait()
 
     def start(self, reason='loading'):
     #  Set up load_stopped and stop_loading.
+        "Begins a loading screen in the console. Optionally displays the reason for loading."
         self.load_stopped.clear()
         self.stop_loading.clear()
         threading.Thread(target=self.load, args=(reason,)).start()

@@ -7,12 +7,12 @@
 #------------------
 import random
 import json
+import ollama
 
 #------------------
 #-   Entities     -
 #------------------
-import Modules.entity as entity
-
+from Modules.entities import Entity, Enemy, Player
 
 #------------------
 #- Loading Screen -
@@ -29,10 +29,7 @@ ai = AI()
 #------------------
 #-  Simplicities  -
 #------------------
-from Modules.simplify import wait
-from Modules.simplify import clear
-from Modules.simplify import show_cursor
-from Modules.simplify import hide_cursor\
+from Modules.simplify import wait, clear, show_cursor, hide_cursor
 
 #--------------------------------------------------------------------------------------------------------------
 #   Decision Trees
@@ -40,16 +37,16 @@ from Modules.simplify import hide_cursor\
 
 opening_decisions = {
     'village':[
-                'You approach a village.', 
-                'Will you like to enter the village?'
+                'You approach a village.',                      # Header
+                'Will you like to enter the village?'           # Question
             ],
     'door':[
-                'You approach a door', 
-                'Would you you like to go through the door?'
+                'You approach a door',                          # Header
+                'Would you you like to go through the door?'    # Question
             ],
     'dungeon':[
-                'You approach a dungeon entrance',
-                'Step into the dungeon entrance?'
+                'You approach a dungeon entrance',              # Header
+                'Step into the dungeon entrance?'               # Question
             ],
 }
 
@@ -57,23 +54,26 @@ opening_decisions = {
 #   Main Function
 #--------------------------------------------------------------------------------------------------------------
 
+loading.start('Verifying installation')
+ollama.pull('llama3.2')
+loading.stop()
+
+average = 0
+
 def main():
-    player = entity.Player()
-    while True:
+    global average
+    player = Player()
+    for i in range(10):
         clear()
         options = [
-           'begin'
+           'proceed',
+           'flee',
+           'elaborate'
         ]
         situation = random.choice(list(opening_decisions.keys()))
-        
         user_input = ai.ask(opening_decisions[situation][1], options, True)
-        print(f'Average: {ai.total_time/ai.tries}')
-        wait(1)
-        if user_input in options:
-            print(f'Success: {user_input}')
-        else:
-            print(user_input)
-        wait(1.5)
+    print("Finished testing")
+        
 main()
 
-
+ai.

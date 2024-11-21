@@ -46,7 +46,6 @@ class Menu:
         return last_input
 
     def change_situation(self, new_text):
-        self.ituation.config(text=new_text)
-    
-        
+        self.situation.config(text=new_text)
 
+Menu()

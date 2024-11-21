@@ -6,18 +6,18 @@ import json
 import random
 from Modules.weapon import Weapon
 
-
 #--------------------------------------------------------------------------------------------------------------
 #   Entity
 #--------------------------------------------------------------------------------------------------------------
 
 class Entity:
-    def __init__(self, max_health):
+    def __init__(self, max_health:int):
         self.health = max_health
         self.max_health = max_health
         self.dead = False
 
-    def damage(self, damage):
+    def damage(self, damage:int):
+        "Damages the entity."
         self.health -= damage
         if self.health - damage <= 0:
             self.dead = True
@@ -37,7 +37,7 @@ ENEMIES = {
 
 # Enemy class
 class Enemy(Entity):
-    def __init__(self, difficulty=1):
+    def __init__(self, difficulty:int=1):
         self.enemy_data = random.choice(ENEMIES[f'{difficulty}_diff'])
         super().__init__(20)
 
@@ -50,5 +50,6 @@ class Player(Entity):
         super().__init__(20)
         self.equipped = Weapon('Gregorator', 5)
     
-    def equip(self, name, damage):
+    def equip(self, name:str, damage:float):
+        "Equips a weapon onto the player."
         self.equipped = Weapon(name, damage)

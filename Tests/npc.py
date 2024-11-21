@@ -11,7 +11,7 @@ npc_context = {}
 # Notably, an NPC mentioned "dark fantasy", which is in its system prompt.
 # Breaking the forth wall is obviously pretty bad.
 
-with open(f'npc_context.json') as context_file:
+with open(f'data/npc_context.json') as context_file:
     try:
         npc_context = json.load(context_file)
     except:
@@ -41,11 +41,11 @@ def dialog(name, prompt):
                 "" 
         else:
             npc_context[f'{name}'] = context
-            with open('npc_context.json', 'w') as f:
+            with open('data/npc_context.json', 'w') as f:
                 json.dump(npc_context, f)
             return chunk['response'].strip('_')
     npc_context[f'{name}'] = context
-    with open('npc_context.json', 'w') as f:
+    with open('data/npc_context.json', 'w') as f:
         json.dump(npc_context, f)
     print("\n")
     return False

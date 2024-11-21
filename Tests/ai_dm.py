@@ -282,6 +282,7 @@ def enter_combat(difficulty=easy):
     while enemy['health'] > 0 and player['health'] > 0:
         intent = find_intent(player_prompt, choices, room)
         #print(f"INTENT DETECTED AS [{intent}]")
+        
         if "attack" in intent:
             #----------------------------
             #-      Player's turn       -    
