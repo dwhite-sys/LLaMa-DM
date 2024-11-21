@@ -31,6 +31,12 @@ ai = AI()
 #------------------
 from Modules.simplify import wait, clear, show_cursor, hide_cursor
 
+#------------------
+#-    Combat      -
+#------------------
+from Modules.combat import start_combat
+
+
 #--------------------------------------------------------------------------------------------------------------
 #   Decision Trees
 #--------------------------------------------------------------------------------------------------------------
@@ -61,19 +67,19 @@ loading.stop()
 average = 0
 
 def main():
-    global average
     player = Player()
-    for i in range(10):
-        clear()
-        options = [
-           'proceed',
-           'flee',
-           'elaborate'
-        ]
-        situation = random.choice(list(opening_decisions.keys()))
-        user_input = ai.ask(opening_decisions[situation][1], options, True)
-    print("Finished testing")
+    start_combat(player)
+    # global average
+    # for i in range(10):
+    #     clear()
+    #     options = [
+    #        'proceed',
+    #        'flee',
+    #        'elaborate'
+    #     ]
+    #     situation = random.choice(list(opening_decisions.keys()))
+    #     user_input = ai.ask(opening_decisions[situation][1], options, True)
+    # print("Finished testing")
+
         
 main()
-
-ai.

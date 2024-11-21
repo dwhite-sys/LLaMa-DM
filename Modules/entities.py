@@ -16,11 +16,24 @@ class Entity:
         self.max_health = max_health
         self.dead = False
 
-    def damage(self, damage:int):
+    def take_damage(self, damage:int):
         "Damages the entity."
         self.health -= damage
         if self.health - damage <= 0:
             self.dead = True
+
+    def roll_hit(self) -> bool:
+        "Outputs success/failure of a hit"
+        chance = random.random() * 100
+        if chance > 20:
+            return True
+        else:
+            return False
+
+    def deal_damage(self) -> int:
+        "Outputs damage for the entity to inflict"
+        damage = self.max_health/10
+        return damage
 
 #--------------------------------------------------------------------------------------------------------------
 #   Enemy
@@ -37,9 +50,13 @@ ENEMIES = {
 
 # Enemy class
 class Enemy(Entity):
-    def __init__(self, difficulty:int=1):
-        self.enemy_data = random.choice(ENEMIES[f'{difficulty}_diff'])
+    def __init__(self, difficulty:str='easy'):
         super().__init__(20)
+        self.enemy_data = random.choice(ENEMIES[f'{difficulty}_dif'])
+        self.name = 'placeholder'
+
+    def deal_damge(self) -> int:
+        return super().deal_damge()
 
 #--------------------------------------------------------------------------------------------------------------
 #   Player

@@ -7,6 +7,7 @@ if AI_INTENT == True:
     from Modules.ai import AI
     ai = AI()
 
+#
 #           Root ---v                           # The root is the entire decision tree
 #                   Tree ---v                   # The tree is the current decision
 #                        Branches               # Branches are any branching decisions from the current one.
@@ -141,7 +142,7 @@ def check_do(tree:dict):
 
 # The parser for the interpreter
 def parse(tree:dict, previous:dict, root:dict) -> dict:
-    "Outputs either a chosen or randomly chosen new tree."
+    "Outputs either a player chosen or randomly chosen new tree."
     # Look to see if options exist, if not it treats it as just a message to the player.
     check_do(tree)
     if 'options' in list(tree):

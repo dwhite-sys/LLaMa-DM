@@ -63,6 +63,11 @@ class AI():
         "Generates the answer to a question. Designed for automating the ask method."
         prompt = f'Create a simple answer for the following as if you were a user: {question}'
         return ollama.generate(self.version, prompt)['response']
+    
+    def describe_turn(self, text:str) -> str:
+        'Describes a situation based on input.'
+        output = text
+        return output
 
     def intent(self, text:str, query:str, options:list, context=None, basic_options=False) -> str:
         refresh = 0
