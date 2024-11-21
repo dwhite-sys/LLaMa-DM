@@ -11,10 +11,11 @@ from Modules.weapon import Weapon
 #--------------------------------------------------------------------------------------------------------------
 
 class Entity:
-    def __init__(self, max_health:int):
+    def __init__(self, max_health:int=20):
         self.health = max_health
         self.max_health = max_health
         self.dead = False
+        self.hit_chance = 60
 
     def take_damage(self, damage:int):
         "Damages the entity."
@@ -25,7 +26,8 @@ class Entity:
     def roll_hit(self) -> bool:
         "Outputs success/failure of a hit"
         chance = random.random() * 100
-        if chance > 20:
+        
+        if chance < self.hit_chance:
             return True
         else:
             return False
@@ -51,7 +53,15 @@ ENEMIES = {
 # Enemy class
 class Enemy(Entity):
     def __init__(self, difficulty:str='easy'):
-        super().__init__(20)
+        #TODO CHANCE DIFFICULTY TO NUMBER
+        health = int # Default health
+        if difficulty == 'easy':
+            health = random.randint(1, 10)
+        if difficulty == 'med':
+            health = random.randint(10, 20)
+        else:
+            health = random.randint(20, 30)
+        super().__init__(health)
         self.enemy_data = random.choice(ENEMIES[f'{difficulty}_dif'])
         self.name = 'placeholder'
 
@@ -66,6 +76,7 @@ class Player(Entity):
     def __init__(self):
         super().__init__(20)
         self.equipped = Weapon('Gregorator', 5)
+        self.hit_chance = 80
     
     def equip(self, name:str, damage:float):
         "Equips a weapon onto the player."

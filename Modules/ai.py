@@ -18,8 +18,8 @@ loading = LoadingScreen()
 #   Class
 #--------------------------------------------------------------------------------------------------------------
 
-block = '----------------------------------------------------------------------------------------------------------------------------------------'
-small_block = '-------------------------------------------------------------------------'
+# Used for formatting. It's the exact length of the editing window in 1080p.
+BLOCK = '----------------------------------------------------------------------------------------------------------------------------------------'
 
 class AI():
     _instance = None
@@ -42,7 +42,7 @@ class AI():
         self.tries = 0
 
     with open('data/log.txt', 'w') as file: 
-        file.write(block)
+        file.write(BLOCK)
 #  Ask a question and get the intent
     def ask(self, query:str, options:list, testing=False) -> str:
         "Asks the player a given question and matches the intent to a set of options."
@@ -64,11 +64,13 @@ class AI():
         prompt = f'Create a simple answer for the following as if you were a user: {question}'
         return ollama.generate(self.version, prompt)['response']
     
+#  Have the AI describe a combat turn
     def describe_turn(self, text:str) -> str:
         'Describes a situation based on input.'
         output = text
         return output
-
+    
+#  Extract intent
     def intent(self, text:str, query:str, options:list, context=None, basic_options=False) -> str:
         refresh = 0
         start = time.time()
@@ -108,7 +110,7 @@ class AI():
                         debug = f'Question: {query}\nOptions: {', '.join(options)}\nAnswer: {text}\nResult: {outcome}\nAverage: {average:.2f}\nAttempts:{refresh}\nTotal Tries:{self.tries}'
                         file.write(debug)
                 with open('data/log.txt', 'a') as file: 
-                    log = f'\nQuestion: {query}\nAnswer: {text}\nResult: {outcome}\nReasoning: [\n{compilation}]\nElapsed: {elapsed}\nAttempts:{refresh}/3\n{block}'
+                    log = f'\nQuestion: {query}\nAnswer: {text}\nResult: {outcome}\nReasoning: [\n{compilation}]\nElapsed: {elapsed}\nAttempts:{refresh}/3\n{BLOCK}'
                     file.write(log)
 
                 return outcome.lower().strip(', ."')
