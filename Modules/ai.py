@@ -44,38 +44,73 @@ class AI():
     with open('data/log.txt', 'w') as file: 
         file.write(BLOCK)
 #  Ask a question and get the intent
-    def ask(self, query:str, options:list, testing=False) -> str:
-        "Asks the player a given question and matches the intent to a set of options."
+    def ask(self, query:str, options:list, setting:str=None, show_basic_options=True, testing=False) -> str:
+        '''
+        Asks the player a given question and matches the intent to a set of options.
+        Optionally, it'll rephrase the current setting.
+        You can also choose whether or not to show the basic options, like checking inventory.
+        '''
+        # Start the loading screen
         loading.start('Generating question')
-        prompt = f'You\'re a detached narrator. Rephrase "{query}" in a single sentence, keeping it in question form. Don\'t put it in quotes.'
-        rephrase = ollama.generate(self.version, prompt)['response']
+        
         loading.stop()
+
+        # If a setting was given, create a prompt for merging it with the question. Otherwise, just rephrase the question.
+        print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+       
+        if setting:
+            setting = self.redescribe(setting)
+            print(setting)
+            print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
+            question = f'You\'re a detached narrator. Take this setting description: "{setting}" and this question "{query}" and rephrase them into a short \'would you like to\' question. Don\'t put it in quotes.'
+        else:
+            question = f'You\'re a detached narrator. Rephrase "{query}" in a single sentence, keeping it in question form. Don\'t put it in quotes.'
+
+        # Generate question
+        rephrased_question = ollama.generate(self.version, question)['response']
+        print(rephrased_question)
+        print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
+        # Create the options string for the player and print it
+        basic_options = ['check inventory']
+        option_string = f", ".join(list(options)) + f", ".join(list(basic_options)) if show_basic_options else ", ".join(options)
+        print(f'Options: {option_string.title()}')
+        print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+        
+        # Actually ask the question. Testing mode just uses AI to answer itself for debug purposes.
         if testing == False:
-            return self.intent(input(rephrase + ' '), query, options)
+            # Ask the question and return the intent
+            question = input()
+            return self.intent(question, query, options, setting)
         else:
             loading.start('Generating answer')
-            answer = self.answer(rephrase)
+            answer = self.answer(rephrased_question)
             loading.stop()
-            return self.intent(answer, query, options)
+            return self.intent(answer, query, options, setting)
     
-#  The AI will answer a question
-    def answer(self, question:str) -> str:
+    # The AI will answer a question
+    def answer(self, question:str, setting:str=None) -> str:
         "Generates the answer to a question. Designed for automating the ask method."
         prompt = f'Create a simple answer for the following as if you were a user: {question}'
-        return ollama.generate(self.version, prompt)['response']
-    
-#  Have the AI describe a combat turn
-    def describe_turn(self, text:str) -> str:
-        'Describes a situation based on input.'
-        prompt = f'Rephrase the following combat update in a short sene: {text}'
         output = ollama.generate(self.version, prompt)['response']
         return output
     
-#  Have the AI rephrase something in a dark, poetic way
-    def 
+    # Have the AI describe a combat turn
+    def describe_turn(self, text:str) -> str:
+        'Describes a situation based on input.'
+        prompt = f'Rephrase the following combat update in a short sentence: {text}'
+        output = ollama.generate(self.version, prompt)['response']
+        return output
     
-#  Extract intent
-    def intent(self, text:str, query:str, options:list, context=None, basic_options=False) -> str:
+    # Have the AI rephrase something in a dark, poetic way
+    def redescribe(self, text:str) -> str:
+        'Redescribes a setting.'
+        prompt = f'Rephrase the following dark fantasy style in a short paragraph: {text}'
+        output = ollama.generate(self.version, prompt)['response']
+        return output
+        
+    
+    # Extract intent
+    def intent(self, text:str, query:str, options:list, setting:str=None, basic_options=False) -> str:
         refresh = 0
         start = time.time()
         while refresh < self.refresh:
@@ -84,25 +119,25 @@ class AI():
             self.tries += 1
             loading.start('Grabbing intent')
         
-        #  Assemble the options string
+            # Assemble the options string
             if basic_options != False:
                 basic_options = ['check inventory']
                 options += basic_options
             option_string = f", ".join(list(options)) + f", ".join(list(basic_options)) if basic_options else ", ".join(options)
 
-        #  Start grabbing intent votes
-            prompt = f'Get user intention from the following text: "{text}" from the following context: "{query}" out of the following options: "{option_string}". Your output must STRICTLY be from the list of options. After that, explain your reasoning in one short sentence. Ignore hesitation.'
+            # Start grabbing intent votes
+            prompt = f'Get user intention from the following text: "{text}" from the following context: "{setting + query if setting else query}" out of the following options: "{option_string}". Your output must STRICTLY be from the list of options. After that, explain your reasoning in one short sentence. Ignore hesitation.'
             compilation = ''
             for i in range(self.votes):
                 compilation += f'{ollama.generate(self.version, prompt)['response']}\n'
             loading.stop()
 
-        #  Tally the vote
+            # Tally the vote
             loading.start('Analyzing')
             prompt = f"Look at the following and ONLY output the most commonly picked choice, NOT any kind of reasoning, punctuation, or list: [\n{compilation}]."
             outcome = ollama.generate(self.version, prompt)['response']
 
-        #  Stop loading and return the outcome of the vote
+            # Stop loading and return the outcome of the vote
             loading.stop()
             if outcome.lower().strip(', ."') in options:
                 stop = time.time()

@@ -67,19 +67,13 @@ loading.stop()
 average = 0
 
 def main():
-    player = Player()
-    start_combat(player)
-    # global average
-    # for i in range(10):
-    #     clear()
-    #     options = [
-    #        'proceed',
-    #        'flee',
-    #        'elaborate'
-    #     ]
-    #     situation = random.choice(list(opening_decisions.keys()))
-    #     user_input = ai.ask(opening_decisions[situation][1], options, True)
-    # print("Finished testing")
+    setting = 'You see a wooden door in the side of a mountain.'
+    query = 'Would you like to open it?'
+    options = ['open', 'turn back']
+    input = ai.ask(query, options, setting, show_basic_options=True)
+    if input == 'open':
+        player = Player()
+        start_combat(player)
 
         
 main()
