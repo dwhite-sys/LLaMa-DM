@@ -78,12 +78,21 @@ def test_AI():
     print("Finished testing")
 
 def test_combat():
+    # player = Player()
+    # for i in range(3):
+    #     start_combat(player)
+    #     print("--------------------------------------------")
+
     player = Player()
-    for i in range(3):
-        start_combat(player)
-        print("--------------------------------------------")
+    enemy = Enemy('easy')
+    start_combat(player, enemy)
+    print("----------------------------------")
+
+
 
 def main():
+    test_combat()
+    test_combat()
     test_combat()
     
 
