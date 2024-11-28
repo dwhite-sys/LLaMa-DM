@@ -2,19 +2,27 @@ from Modules.entities import Enemy, Player
 from Modules.ai import AI
 ai = AI()
 
-def start_combat(player:Player, enemy:Enemy=Enemy()):
+def start_combat(player:Player, enemy:Enemy=None):
+    print(enemy)
+    if enemy == None:
+        enemy = Enemy()
     "Begins combat"
-    while  enemy.health > 0:
+    print("Combat began")
+    print(enemy.health)
+    while enemy.health > 0 or player.health > 0:
         # Player Attack
         if player.health > 0:
             turn(player, enemy)
         else:
             print('You died.')
+            break
         # Enemy attack
         if enemy.health > 0:
             turn(enemy, player)
         else:
             print(f'{enemy.name} died.')
+            break
+    print("Combat finished")
 
 def turn(attacker=object, defender=object):
     "Start a new combat turn"
