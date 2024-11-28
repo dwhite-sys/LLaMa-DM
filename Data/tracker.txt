@@ -1,7 +1,7 @@
-Question: You approach a village. Would you like to proceed?
-Options: proceed
-Answer: proceed
-Result: Proceed
-Average: 14.85
-Attempts:2
-Total Tries:1
+Question: Step into the dungeon entrance?
+Options: proceed, turn back, elaborate
+Answer: I guess
+Result: turn back
+Average: 2.63
+Attempts:3
+Total Tries:3

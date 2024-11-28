@@ -5,6 +5,7 @@
 #------------------
 #-    Outside     -
 #------------------
+
 import random
 import json
 import ollama
@@ -64,22 +65,25 @@ loading.start('Verifying installation')
 ollama.pull('llama3.2')
 loading.stop()
 
-average = 0
+def test_AI():
+    for i in range(10):
+        clear()
+        options = [
+           'proceed',
+           'turn back',
+           'elaborate'
+        ]
+        situation = random.choice(list(opening_decisions.keys()))
+        user_input = ai.ask(opening_decisions[situation][1], options)
+    print("Finished testing")
 
-def main():
+def test_combat():
     player = Player()
     start_combat(player)
-    # global average
-    # for i in range(10):
-    #     clear()
-    #     options = [
-    #        'proceed',
-    #        'flee',
-    #        'elaborate'
-    #     ]
-    #     situation = random.choice(list(opening_decisions.keys()))
-    #     user_input = ai.ask(opening_decisions[situation][1], options, True)
-    # print("Finished testing")
+
+def main():
+    test_combat()
+    
 
         
 main()

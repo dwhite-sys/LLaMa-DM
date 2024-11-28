@@ -3,6 +3,7 @@ from Modules.ai import AI
 ai = AI()
 
 def start_combat(player:Player, enemy:Enemy=Enemy()):
+    "Begins combat"
     while  enemy.health > 0:
         # Player Attack
         if player.health > 0:
@@ -12,6 +13,7 @@ def start_combat(player:Player, enemy:Enemy=Enemy()):
             turn(enemy, player)
 
 def turn(attacker=object, defender=object):
+    "Start a new combat turn"
     if attacker.roll_hit():
         damage_dealt = defender.deal_damage()
         defender.take_damage(damage_dealt)
