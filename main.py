@@ -78,15 +78,6 @@ def test_AI():
     print("Finished testing")
 
 def test_combat():
-<<<<<<< HEAD
-    for i in range(3):
-        player = Player()
-        start_combat(player)
-        print("--------------------------------------------")
-
-def main():
-    test_combat()
-=======
     # player = Player()
     # for i in range(3):
     #     start_combat(player)
@@ -104,6 +95,5 @@ def main():
     test_combat()
     test_combat()
     
->>>>>>> 8a7deac185e9d98eb3037555345711bd38ac4a70
 
 main()
