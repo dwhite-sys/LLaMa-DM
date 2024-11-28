@@ -57,7 +57,7 @@ class AI():
             answer = self.answer(rephrase)
             loading.stop()
             return self.intent(answer, query, options)
-    
+
 #  The AI will answer a question
     def answer(self, question:str) -> str:
         "Generates the answer to a question. Designed for automating the ask method."

@@ -26,4 +26,4 @@ def turn(attacker=object, defender=object):
             situation = f'{attacker.name} missed.'
     description = ai.describe_turn(situation)
     print(description)
-
+    
