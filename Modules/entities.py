@@ -66,7 +66,7 @@ class Enemy(Entity):
         self.name = 'placeholder'
 
     def deal_damge(self) -> int:
-        return super().deal_damge()
+        return super().deal_damage()
 
 #--------------------------------------------------------------------------------------------------------------
 #   Player
