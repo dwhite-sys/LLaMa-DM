@@ -18,8 +18,8 @@ loading = LoadingScreen()
 #   Class
 #--------------------------------------------------------------------------------------------------------------
 
-block = '----------------------------------------------------------------------------------------------------------------------------------------'
-small_block = '-------------------------------------------------------------------------'
+# Used for formatting. It's the exact length of the editing window in 1080p.
+BLOCK = '----------------------------------------------------------------------------------------------------------------------------------------'
 
 class AI():
     _instance = None
@@ -42,7 +42,7 @@ class AI():
         self.tries = 0
 
     with open('data/log.txt', 'w') as file: 
-        file.write(block)
+        file.write(BLOCK)
 #  Ask a question and get the intent
     def ask(self, query:str, options:list, testing=False) -> str:
         "Asks the player a given question and matches the intent to a set of options."
@@ -57,25 +57,31 @@ class AI():
             answer = self.answer(rephrase)
             loading.stop()
             return self.intent(answer, query, options)
-
+    
 #  The AI will answer a question
     def answer(self, question:str) -> str:
         "Generates the answer to a question. Designed for automating the ask method."
         prompt = f'Create a simple answer for the following as if you were a user: {question}'
         return ollama.generate(self.version, prompt)['response']
     
+#  Have the AI describe a combat turn
     def describe_turn(self, text:str) -> str:
         'Describes a situation based on input.'
-        output = text
+        prompt = f'Rephrase the following combat update in a short sene: {text}'
+        output = ollama.generate(self.version, prompt)['response']
         return output
-
+    
+#  Have the AI rephrase something in a dark, poetic way
+    def 
+    
+#  Extract intent
     def intent(self, text:str, query:str, options:list, context=None, basic_options=False) -> str:
         refresh = 0
         start = time.time()
-        self.tries += 1
         while refresh < self.refresh:
             refresh += 1
             self.refreshes += 1
+            self.tries += 1
             loading.start('Grabbing intent')
         
         #  Assemble the options string
@@ -85,10 +91,10 @@ class AI():
             option_string = f", ".join(list(options)) + f", ".join(list(basic_options)) if basic_options else ", ".join(options)
 
         #  Start grabbing intent votes
-            prompt = f'Get user intention from the following text: "{text}" from the following context: "{query}" out of the following options: "{option_string}". Your output must STRICTLY be from the list of options. After that, explain your reasoning and keep it brief. Ignore hesitation.'
+            prompt = f'Get user intention from the following text: "{text}" from the following context: "{query}" out of the following options: "{option_string}". Your output must STRICTLY be from the list of options. After that, explain your reasoning in one short sentence. Ignore hesitation.'
             compilation = ''
             for i in range(self.votes):
-                compilation += f'Entry: ({ollama.generate(self.version, prompt)['response']},\n)'
+                compilation += f'{ollama.generate(self.version, prompt)['response']}\n'
             loading.stop()
 
         #  Tally the vote
@@ -102,15 +108,13 @@ class AI():
                 stop = time.time()
                 elapsed = stop-start
                 self.total_time += elapsed
-
                 with open('data/tracker.txt', 'w') as file:
                         average = self.total_time/self.tries
-                        debug = f'Question: {query}\nOptions: {', '.join(options)}\nAnswer: {text}\nResult: {outcome}\nAverage: {average:.2f}\nAttempts:{refresh}\nTotal Tries:{self.tries}'
+                        debug = f'Question: {query}\nOptions: {', '.join(options)}\nAnswer: {text}\nResult: {outcome}\nAverage: {average:.2f}\nAttempts:{self.refreshes}\nTotal Tries:{self.tries}'
                         file.write(debug)
                 with open('data/log.txt', 'a') as file: 
-                    log = f'\nQuestion: {query}\nAnswer: {text}\nResult: {outcome}\nReasoning: [\n{compilation}]\nElapsed: {elapsed}\nAttempts:{refresh}/3\n{block}'
+                    log = f'\nQuestion: {query}\nAnswer: {text}\nResult: {outcome}\nReasoning: [\n{compilation}]\nElapsed: {elapsed}\nAttempts:{refresh}/3\n{BLOCK}'
                     file.write(log)
-
                 return outcome.lower().strip(', ."')
             print(f'{refresh}/{self.refresh}')
         print("Intent not found.")

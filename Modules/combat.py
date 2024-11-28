@@ -16,14 +16,14 @@ def turn(attacker=object, defender=object):
         damage_dealt = defender.deal_damage()
         defender.take_damage(damage_dealt)
         if isinstance(attacker, Player):
-            situation = f'You attacked {defender.name} for {damage_dealt} HP.'
+            situation = f'You attacked {defender.name} for {damage_dealt} damage.'
         else:
-            situation = f'{attacker.name} attacked you for {damage_dealt} HP.'
+            situation = f'{attacker.name} attacked you for {damage_dealt} damage.'
     else:
         if isinstance(attacker, Player):
-            situation = f'You missed.'
+            situation = f'You missed trying to hit {attacker.name}.'
         else:
-            situation = f'{attacker.name} missed.'
+            situation = f'{attacker.name} missed trying to hit you.'
     description = ai.describe_turn(situation)
     print(description)
     
