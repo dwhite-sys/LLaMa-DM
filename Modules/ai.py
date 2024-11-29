@@ -30,11 +30,11 @@ class AI():
 
     def __init__(self):
     #  Settings
-        self.refresh = 3
-        self.votes = 3
-        self.basic_choices = {'check inventory'}
-        self.version = 'llama3.2:latest'
-        self.situation_context = []
+        self.refresh = 3                          # Max retries for the vote system.
+        self.votes = 3                            # Number of votes for the vote system.
+        self.basic_choices = ['check inventory']  # The default options for the player.
+        self.version = 'llama3.2:latest'          # The LLM used for the program.
+        self.situation_context = []               # Used for saving AI context.
 
     #  Statistics
         self.total_time = 0
@@ -43,37 +43,39 @@ class AI():
 
     with open('data/log.txt', 'w') as file: 
         file.write(BLOCK)
-#  Ask a question and get the intent
+    
+    # Ask a question and get the intent
     def ask(self, query:str, options:list, setting:str=None, show_basic_options=True, testing=False) -> str:
         '''
         Asks the player a given question and matches the intent to a set of options.
         Optionally, it'll rephrase the current setting.
         You can also choose whether or not to show the basic options, like checking inventory.
         '''
-        # Start the loading screen
+        # If a setting was given, create a prompt for merging it with the question. Otherwise, just rephrase the question.
+        if setting:
+            loading.start('Generating setting')
+            setting = self.redescribe(setting)
+            loading.stop()
+            question = f'You\'re a detached narrator. Take this setting description: "{setting}" and this question :"{query}" and simplify them into a short question. Don\'t put it in quotes.'
+        else:
+            question = f'You\'re a detached narrator. Rephrase "{query}" in a simple, direct question. Don\'t put it in quotes or explain yourself.'
+
+        # Generate question 
         loading.start('Generating question')
-        
+        rephrased_question = ollama.generate(self.version, question)['response']
         loading.stop()
 
-        # If a setting was given, create a prompt for merging it with the question. Otherwise, just rephrase the question.
+        # Display in this order: Setting, question, options, input space.
         print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------')
-       
         if setting:
-            setting = self.redescribe(setting)
             print(setting)
             print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-            question = f'You\'re a detached narrator. Take this setting description: "{setting}" and this question "{query}" and rephrase them into a short \'would you like to\' question. Don\'t put it in quotes.'
-        else:
-            question = f'You\'re a detached narrator. Rephrase "{query}" in a single sentence, keeping it in question form. Don\'t put it in quotes.'
-
-        # Generate question
-        rephrased_question = ollama.generate(self.version, question)['response']
         print(rephrased_question)
-        print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-        # Create the options string for the player and print it
-        basic_options = ['check inventory']
-        option_string = f", ".join(list(options)) + f", ".join(list(basic_options)) if show_basic_options else ", ".join(options)
-        print(f'Options: {option_string.title()}')
+        # print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
+        # # Create the options string for the player and print it
+        # basic_options = ['check inventory']
+        # option_string = f", ".join(list(options)) + ', ' + f", ".join(list(self.basic_choices)) if show_basic_options else ", ".join(options)
+        # print(f'Options: {option_string.title()}')
         print('---------------------------------------------------------------------------------------------------------------------------------------------------------------------')
         
         # Actually ask the question. Testing mode just uses AI to answer itself for debug purposes.
@@ -94,17 +96,25 @@ class AI():
         output = ollama.generate(self.version, prompt)['response']
         return output
     
+    # TODO: Combine describe turn and describe action into a single function for clarity
     # Have the AI describe a combat turn
     def describe_turn(self, text:str) -> str:
-        'Describes a situation based on input.'
-        prompt = f'Rephrase the following combat update in a short sentence: {text}'
+        'Redescribes a situation based on input.'
+        prompt = f'Rephrase the following combat update in a short sentence: "{text}". It shouldn\'t be in quotes or come with an explanation.'
         output = ollama.generate(self.version, prompt)['response']
         return output
     
+    def describe_action(self, text:str) -> str:
+        'Redescribes a situation based on input.'
+        prompt = f'Rephrase the following action update in a short sentence: "{text}". It shouldn\'t be in quotes or come with an explanation.'
+        output = ollama.generate(self.version, prompt)['response']
+        return output
+    
+    # TODO: Change "redescribe" to "describe_setting" in all files, this one included.
     # Have the AI rephrase something in a dark, poetic way
     def redescribe(self, text:str) -> str:
         'Redescribes a setting.'
-        prompt = f'Rephrase the following dark fantasy style in a short paragraph: {text}'
+        prompt = f'Rephrase the following dark fantasy style in a short paragraph: {text}. Don\'t make it unclear what the original text was.'
         output = ollama.generate(self.version, prompt)['response']
         return output
         
@@ -117,12 +127,11 @@ class AI():
             refresh += 1
             self.refreshes += 1
             self.tries += 1
-            loading.start('Grabbing intent')
+            loading.start('Processing')
         
             # Assemble the options string
             if basic_options != False:
-                basic_options = ['check inventory']
-                options += basic_options
+                options += self.basic_choices
             option_string = f", ".join(list(options)) + f", ".join(list(basic_options)) if basic_options else ", ".join(options)
 
             # Start grabbing intent votes
