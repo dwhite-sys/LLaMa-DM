@@ -4,20 +4,18 @@
 
 import json
 import random
-import pygame
 from Modules.weapon import Weapon
 
 #--------------------------------------------------------------------------------------------------------------
 #   Entity
 #--------------------------------------------------------------------------------------------------------------
 
-class Entity(pygame.sprite.Sprite):
+class Entity:
     def __init__(self, max_health:int=20):
         self.health = max_health
         self.max_health = max_health
         self.dead = False
         self.hit_chance = 60
-        
 
     def take_damage(self, damage:int):
         "Damages the entity."
@@ -35,7 +33,10 @@ class Entity(pygame.sprite.Sprite):
             return False
 
     def deal_damage(self) -> int:
-        return 2
+        "Outputs damage for the entity to inflict"
+        damage = self.max_health/10
+        return damage
+
 #--------------------------------------------------------------------------------------------------------------
 #   Enemy
 #--------------------------------------------------------------------------------------------------------------
@@ -53,25 +54,19 @@ ENEMIES = {
 class Enemy(Entity):
     def __init__(self, difficulty:str='easy'):
         #TODO CHANCE DIFFICULTY TO NUMBER
-        # self.image = pygame.image.load('Art/enemy_frame1_False.png')
-        self.image = pygame.transform.scale((pygame.image.load('Art/enemy_frame1_False.png')) , (84, 84))
-
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (500, 250)
-        self.health = int # Default health
+        health = int # Default health
         if difficulty == 'easy':
-            self.health = random.randint(1, 10)
+            health = random.randint(1, 10)
         if difficulty == 'med':
-            self.health = random.randint(10, 20)
+            health = random.randint(10, 20)
         else:
-            self.health = random.randint(20, 30)
-        super().__init__(self.health)
+            health = random.randint(20, 30)
+        super().__init__(health)
         self.enemy_data = random.choice(ENEMIES[f'{difficulty}_dif'])
-        self.damage = 2
         self.name = 'placeholder'
 
     def deal_damge(self) -> int:
-        return 2
+        return super().deal_damage()
 
 #--------------------------------------------------------------------------------------------------------------
 #   Player
@@ -80,16 +75,9 @@ class Enemy(Entity):
 class Player(Entity):
     def __init__(self):
         super().__init__(20)
-        # self.image = pygame.image.load('Art/player_frame1_True.png')
-        self.image = pygame.transform.scale((pygame.image.load('Art/player_frame1_True.png')) , (54, 84))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (400, 250)
         self.equipped = Weapon('Gregorator', 5)
         self.hit_chance = 80
     
     def equip(self, name:str, damage:float):
         "Equips a weapon onto the player."
         self.equipped = Weapon(name, damage)
-
-    def deal_damage(self):
-        return self.equipped.damage
