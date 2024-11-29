@@ -20,6 +20,8 @@ loading = LoadingScreen()
 
 # Used for formatting. It's the exact length of the editing window in 1080p.
 BLOCK = '----------------------------------------------------------------------------------------------------------------------------------------'
+# Used for formatting. It's the exact length of the editing window in 1080p.
+BLOCK = '----------------------------------------------------------------------------------------------------------------------------------------'
 
 class AI():
     _instance = None
@@ -139,6 +141,7 @@ class AI():
             compilation = ''
             for i in range(self.votes):
                 compilation += f'{ollama.generate(self.version, prompt)['response']}\n'
+                compilation += f'{ollama.generate(self.version, prompt)['response']}\n'
             loading.stop()
 
             # Tally the vote
@@ -155,8 +158,10 @@ class AI():
                 with open('data/tracker.txt', 'w') as file:
                         average = self.total_time/self.tries
                         debug = f'Question: {query}\nOptions: {', '.join(options)}\nAnswer: {text}\nResult: {outcome}\nAverage: {average:.2f}\nAttempts:{self.refreshes}\nTotal Tries:{self.tries}'
+                        debug = f'Question: {query}\nOptions: {', '.join(options)}\nAnswer: {text}\nResult: {outcome}\nAverage: {average:.2f}\nAttempts:{self.refreshes}\nTotal Tries:{self.tries}'
                         file.write(debug)
                 with open('data/log.txt', 'a') as file: 
+                    log = f'\nQuestion: {query}\nAnswer: {text}\nResult: {outcome}\nReasoning: [\n{compilation}]\nElapsed: {elapsed}\nAttempts:{refresh}/3\n{BLOCK}'
                     log = f'\nQuestion: {query}\nAnswer: {text}\nResult: {outcome}\nReasoning: [\n{compilation}]\nElapsed: {elapsed}\nAttempts:{refresh}/3\n{BLOCK}'
                     file.write(log)
                 return outcome.lower().strip(', ."')

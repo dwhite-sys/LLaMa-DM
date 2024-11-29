@@ -2,25 +2,25 @@ from Modules.entities import Enemy, Player
 from Modules.ai import AI
 ai = AI()
 
-def start_combat(player:Player, enemy:Enemy=None) -> str:
+def start_combat(player:Player, enemy:Enemy=None):
     print(enemy)
     if enemy == None:
         enemy = Enemy()
     "Begins combat"
     print("Combat began")
-    # print(enemy.health)
+    print(enemy.health)
     while enemy.health > 0 or player.health > 0:
         # Player Attack
         if player.health > 0:
             turn(player, enemy)
         else:
-            return 'You died.'
+            print('You died.')
             break
         # Enemy attack
         if enemy.health > 0:
             turn(enemy, player)
         else:
-            return f'{enemy.name} died.'
+            print(f'{enemy.name} died.')
             break
     print("Combat finished")
 
@@ -30,14 +30,14 @@ def turn(attacker=object, defender=object):
         damage_dealt = defender.deal_damage()
         defender.take_damage(damage_dealt)
         if isinstance(attacker, Player):
-            situation = f'You attacked {defender.name} for {damage_dealt} damage.'
+            situation = f'You attacked {defender.name} for {damage_dealt} HP.'
         else:
-            situation = f'{attacker.name} attacked you for {damage_dealt} damage.'
+            situation = f'{attacker.name} attacked you for {damage_dealt} HP.'
     else:
         if isinstance(attacker, Player):
-            situation = f'You missed trying to hit {attacker.name}.'
+            situation = f'You missed.'
         else:
-            situation = f'{attacker.name} missed trying to hit you.'
+            situation = f'{attacker.name} missed.'
     description = ai.describe_turn(situation)
     print(description)
-    
+
