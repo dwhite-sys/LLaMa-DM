@@ -237,6 +237,7 @@ def main():
     # Initialize Music
     pygame.mixer.music.load("Audio/8-bit-dungeon-251388.mp3")
     pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.01)
 
     run()
 
