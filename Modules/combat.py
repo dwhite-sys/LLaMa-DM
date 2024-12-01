@@ -1,4 +1,4 @@
-from Modules.entities import Enemy, Player
+from Modules.entities import Entity, Enemy, Player
 from Modules.ai import AI
 ai = AI()
 
@@ -24,10 +24,10 @@ def start_combat(player:Player, enemy:Enemy=None) -> str:
             break
     print("Combat finished")
 
-def turn(attacker=object, defender=object):
+def turn(attacker: Entity, defender: Entity):
     "Start a new combat turn"
     if attacker.roll_hit():
-        damage_dealt = defender.deal_damage()
+        damage_dealt = attacker.deal_damage()
         defender.take_damage(damage_dealt)
         if isinstance(attacker, Player):
             situation = f'You attacked {defender.name} for {damage_dealt} damage.'
@@ -39,5 +39,5 @@ def turn(attacker=object, defender=object):
         else:
             situation = f'{attacker.name} missed trying to hit you.'
     description = ai.describe_turn(situation)
-    print(description)
+    return (description)
     

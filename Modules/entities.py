@@ -6,6 +6,7 @@ import json
 import random
 import pygame
 from Modules.weapon import Weapon
+from Modules.health_bar import Health_Bar
 
 #--------------------------------------------------------------------------------------------------------------
 #   Entity
@@ -17,6 +18,8 @@ class Entity(pygame.sprite.Sprite):
         self.max_health = max_health
         self.dead = False
         self.hit_chance = 60
+        self.name = str
+        self.health_bar = Health_Bar(0, 0)
         
 
     def take_damage(self, damage:int):
@@ -68,7 +71,7 @@ class Enemy(Entity):
         super().__init__(self.health)
         self.enemy_data = random.choice(ENEMIES[f'{difficulty}_dif'])
         self.damage = 2
-        self.name = 'placeholder'
+        self.name = 'Enemy'
 
     def deal_damge(self) -> int:
         return 2
@@ -84,8 +87,9 @@ class Player(Entity):
         self.image = pygame.transform.scale((pygame.image.load('Art/player_frame1_True.png')) , (54, 84))
         self.rect = self.image.get_rect()
         self.rect.topleft = (400, 250)
-        self.equipped = Weapon('Gregorator', 5)
+        self.equipped = Weapon('Gregorator', 10)
         self.hit_chance = 80
+        self.name = 'player'
     
     def equip(self, name:str, damage:float):
         "Equips a weapon onto the player."

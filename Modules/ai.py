@@ -102,7 +102,13 @@ class AI():
     # Have the AI describe a combat turn
     def describe_turn(self, text:str) -> str:
         'Redescribes a situation based on input.'
-        prompt = f'Rephrase the following combat update in a short sentence: "{text}". It shouldn\'t be in quotes or come with an explanation.'
+        prompt = (
+    f"Describe this combat turn in an engaging and illustrative way, "
+    f"using the provided details exactly as written: \"{text}\". "
+    f"Focus on vivid, concise imagery and avoid adding any objects or details not provided. "
+    f"Ensure the description flows naturally without quotation marks or explanations."
+    f"Only describe the attack and the damage number."
+    f"Use 60 words or less.")
         output = ollama.generate(self.version, prompt)['response']
         return output
     
