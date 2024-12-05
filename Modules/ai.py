@@ -109,7 +109,11 @@ class AI():
     f"Ensure the description flows naturally without quotation marks or explanations."
     f"Only describe the attack and the damage number."
     f"Use 60 words or less.")
-        output = ollama.generate(self.version, prompt)['response']
+        output = ollama.generate(self.version, prompt, stream=True)['response']
+        # try:
+        #     context = chunk['context']  # Only the last chunk has a context. If you get, 
+        # except:
+        #     ""
         return output
     
     def describe_action(self, text:str) -> str:
